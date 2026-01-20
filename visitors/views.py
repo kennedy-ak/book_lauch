@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -155,16 +155,16 @@ def dashboard_export_csv(request):
 def dashboard_export_excel(request):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="visitors.xlsx"'
-    
+
     wb = Workbook()
     ws = wb.active
     ws.title = 'Visitors'
-    
+
     # Write headers
     headers = ['Name', 'Phone Number', 'Email', 'Location', 'Created At']
     for col_num, header in enumerate(headers, 1):
         ws.cell(row=1, column=col_num, value=header)
-    
+
     # Write data
     visitors = Visitor.objects.all()
     for row_num, visitor in enumerate(visitors, 2):
@@ -173,7 +173,7 @@ def dashboard_export_excel(request):
         ws.cell(row=row_num, column=3, value=visitor.email)
         ws.cell(row=row_num, column=4, value=visitor.location)
         ws.cell(row=row_num, column=5, value=visitor.created_at.strftime('%Y-%m-%d %H:%M:%S'))
-    
+
     # Adjust column widths
     for col in ws.columns:
         max_length = 0
@@ -186,6 +186,15 @@ def dashboard_export_excel(request):
                 pass
         adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[column].width = adjusted_width
-    
+
     wb.save(response)
     return response
+
+
+@staff_member_required
+def delete_visitor(request, visitor_id):
+    visitor = get_object_or_404(Visitor, id=visitor_id)
+    if request.method == 'POST':
+        visitor.delete()
+        messages.success(request, f'Visitor "{visitor.name}" has been deleted successfully.')
+    return redirect('dashboard')
