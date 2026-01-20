@@ -22,18 +22,21 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
     'book.asogro.com',
+    'book-launch.hitechclan.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://7f8bc480fb26.ngrok-free.app',
     'http://book.asogro.com',
     'https://book.asogro.com',
+    'https://book-launch.hitechclan.com',
 ]
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
     'http://book.asogro.com',
     'https://book.asogro.com',
+    'https://book-launch.hitechclan.com',
 ]
 
 
