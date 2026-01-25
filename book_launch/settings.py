@@ -150,3 +150,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.INFO: 'alert-info',
 }
+
+# Authentication
+LOGIN_URL = 'admin_login'

@@ -14,7 +14,7 @@ class VisitorForm(forms.ModelForm):
         validators=[phone_validator],
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': '+1 (555) 123-4567'
+            'placeholder': '+233 24 123 4567'
         })
     )
     

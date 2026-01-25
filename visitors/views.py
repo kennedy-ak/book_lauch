@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
@@ -11,6 +10,19 @@ import csv
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from django.utils import timezone
+from functools import wraps
+
+
+def staff_member_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('admin_login')
+        if not request.user.is_staff:
+            messages.error(request, 'You do not have permission to access this page.')
+            return redirect('register_visitor')
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 
 def admin_login(request):
